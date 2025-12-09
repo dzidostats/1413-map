@@ -17,6 +17,10 @@
     height: 100vh;
     width: 100vw;
   }
+  .leaflet-image-layer {
+    transform: rotate(45deg);
+    transform-origin: center center;
+  }
 </style>
 </head>
 <body>
@@ -29,21 +33,17 @@
     crs: L.CRS.Simple
   });
 
-  // Rozmiar obrazka (w pikselach) – dostosuj po sprawdzeniu
-  const w = 2048; // szerokość
-  const h = 2048; // wysokość
-  const url = 'wilderness_map_original.png'; // Użytkownik musi wrzucić plik obok HTML
+  const w = 1300;
+  const h = 1300;
+  const url = 'wilderness_map_original.png';
 
   const bounds = [[0,0], [h, w]];
   const image = L.imageOverlay(url, bounds).addTo(map);
 
   map.fitBounds(bounds);
 
-  // Przykład punktów do kliknięcia (można dodać więcej)
   const examplePoints = [
-    { coords: [1024, 1024], name: 'Centrum mapy' },
-    { coords: [1400, 900], name: 'Wieża 1' },
-    { coords: [700, 600], name: 'Wieża 2' }
+    { coords: [650, 650], name: 'Capital' }
   ];
 
   examplePoints.forEach(p => {

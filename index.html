@@ -38,6 +38,28 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+
+  // ============================
+  // ROTACJA WSPÓŁRZĘDNYCH O 45°
+  // ============================
+  function rotatePoint([y, x], angleDeg, center=[650,650]) {
+    const angle = angleDeg * Math.PI / 180;
+
+    const cx = center[0];
+    const cy = center[1];
+
+    const dx = y - cx;
+    const dy = x - cy;
+
+    const rx = dx * Math.cos(angle) - dy * Math.sin(angle);
+    const ry = dx * Math.sin(angle) + dy * Math.cos(angle);
+
+    return [cx + rx, cy + ry];
+  }
+
+  // ===================================
+  // USTAWIENIE MAPY (CRS SIMPLE)
+  // ===================================
   const map = L.map('map', {
     minZoom: -2,
     maxZoom: 4,
@@ -53,35 +75,9 @@
 
   map.fitBounds(bounds);
 
-  // 🔥 Obrót układu współrzędnych o 45°
-  map.whenReady(() => {
-    const size = map.getSize();
-    const cx = size.x / 2;
-    const cy = size.y / 2;
-
-    const panes = [
-      map.getPanes().markerPane,
-      map.getPanes().shadowPane,
-      map.getPanes().popupPane
-    ];
-
-    panes.forEach(p => {
-      p.style.transformOrigin = `${cx}px ${cy}px`;
-      p.style.transform = `rotate(45deg)`;
-    });
-
-    // Dodatkowo - aktualizuj punkt obrotu przy zmianie rozmiaru mapy
-    map.on('resize', () => {
-      const newSize = map.getSize();
-      const ncx = newSize.x / 2;
-      const ncy = newSize.y / 2;
-
-      panes.forEach(p => {
-        p.style.transformOrigin = `${ncx}px ${ncy}px`;
-      });
-    });
-  });
-
+  // ===================================
+  // FUNKCJA DO TWORZENIA IKON
+  // ===================================
   function createIcon(className) {
     return L.divIcon({
       className: className,
@@ -89,6 +85,9 @@
     });
   }
 
+  // ===================================
+  // TWOJE ORYGINALNE PUNKTY
+  // ===================================
   const points = [
     { coords: [650, 650], name: 'Capital', type: 'gold' },
     { coords: [488, 648], name: 'ff1', type: 'gold' },
@@ -109,13 +108,18 @@
     { coords: [398, 1038], name: 'b12', type: 'purple' }
   ];
 
+  // ===================================
+  // DODAWANIE MARKERÓW Z ROTACJĄ
+  // ===================================
   points.forEach(p => {
+    const rotated = rotatePoint(p.coords, 45); // OBRÓT O 45°
     const icon = p.type === 'gold'
       ? createIcon('marker-gold')
       : createIcon('marker-purple');
 
-    L.marker(p.coords, { icon }).addTo(map).bindPopup(p.name);
+    L.marker(rotated, { icon }).addTo(map).bindPopup(p.name);
   });
+
 </script>
 </body>
 </html>

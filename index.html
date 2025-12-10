@@ -17,9 +17,19 @@
     height: 100vh;
     width: 100vw;
   }
-  .leaflet-image-layer {
-    transform: rotate(45deg);
-    transform-origin: center center;
+  .marker-gold {
+    background-color: gold;
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    border: 2px solid #b8860b;
+  }
+  .marker-purple {
+    background-color: purple;
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    border: 2px solid #4b0082;
   }
 </style>
 </head>
@@ -42,12 +52,39 @@
 
   map.fitBounds(bounds);
 
-  const examplePoints = [
-    { coords: [650, 650], name: 'Capital' }
+  function createIcon(className) {
+    return L.divIcon({
+      className: className,
+      iconSize: [16,16]
+    });
+  }
+
+  const points = [
+    { coords: [650, 650], name: 'Capital', type: 'gold' },
+    { coords: [488, 648], name: 'ff1', type: 'gold' },
+    { coords: [648, 488], name: 'ff2', type: 'gold' },
+    { coords: [808, 648], name: 'ff3', type: 'gold' },
+    { coords: [648, 808], name: 'ff4', type: 'gold' },
+    { coords: [258, 898], name: 'b1', type: 'purple' },
+    { coords: [258, 638], name: 'b2', type: 'purple' },
+    { coords: [258, 378], name: 'b3', type: 'purple' },
+    { coords: [398, 258], name: 'b4', type: 'purple' },
+    { coords: [658, 258], name: 'b5', type: 'purple' },
+    { coords: [918, 258], name: 'b6', type: 'purple' },
+    { coords: [1038, 378], name: 'b7', type: 'purple' },
+    { coords: [1038, 638], name: 'b8', type: 'purple' },
+    { coords: [1038, 898], name: 'b9', type: 'purple' },
+    { coords: [918, 1038], name: 'b10', type: 'purple' },
+    { coords: [658, 1038], name: 'b11', type: 'purple' },
+    { coords: [398, 1038], name: 'b12', type: 'purple' }
   ];
 
-  examplePoints.forEach(p => {
-    L.marker(p.coords).addTo(map).bindPopup(p.name);
+  points.forEach(p => {
+    const icon = p.type === 'gold'
+      ? createIcon('marker-gold')
+      : createIcon('marker-purple');
+
+    L.marker(p.coords, { icon }).addTo(map).bindPopup(p.name);
   });
 </script>
 </body>

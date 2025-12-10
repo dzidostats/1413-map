@@ -31,17 +31,11 @@
     height: 14px;
     border: 2px solid #4b0082;
   }
-/* Obrót całego układu współrzędnych dla markerów o 45° */
-  .leaflet-marker-pane,
-  .leaflet-shadow-pane,
-  .leaflet-popup-pane {
-    transform: rotate(45deg);
-    transform-origin: center center;
-  }
 </style>
 </head>
 <body>
 <div id="map"></div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
   const map = L.map('map', {
@@ -58,6 +52,35 @@
   const image = L.imageOverlay(url, bounds).addTo(map);
 
   map.fitBounds(bounds);
+
+  // 🔥 Obrót układu współrzędnych o 45°
+  map.whenReady(() => {
+    const size = map.getSize();
+    const cx = size.x / 2;
+    const cy = size.y / 2;
+
+    const panes = [
+      map.getPanes().markerPane,
+      map.getPanes().shadowPane,
+      map.getPanes().popupPane
+    ];
+
+    panes.forEach(p => {
+      p.style.transformOrigin = `${cx}px ${cy}px`;
+      p.style.transform = `rotate(45deg)`;
+    });
+
+    // Dodatkowo - aktualizuj punkt obrotu przy zmianie rozmiaru mapy
+    map.on('resize', () => {
+      const newSize = map.getSize();
+      const ncx = newSize.x / 2;
+      const ncy = newSize.y / 2;
+
+      panes.forEach(p => {
+        p.style.transformOrigin = `${ncx}px ${ncy}px`;
+      });
+    });
+  });
 
   function createIcon(className) {
     return L.divIcon({
